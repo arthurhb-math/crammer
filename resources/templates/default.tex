@@ -1,0 +1,183 @@
+\documentclass[12pt, a4paper]{article}
+
+\usepackage[\var{ babel_lang }]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{parskip}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage[svgnames]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{newunicodechar}
+\usepackage{hyperref}
+\usepackage{qrcode}
+
+\tcbuselibrary{breakable}
+\tcbuselibrary{skins}
+
+\newunicodechar{≠}{\ensuremath{\neq}}
+
+\hypersetup{
+    colorlinks=true, linkcolor=black, urlcolor=black,
+    pdftitle={\var{ document_settings.document_title }}, 
+    pdfauthor={\var{ course_info.professor_name }},
+    pdfsubject={\var{ course_info.course_name }}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\fancyfoot[L]{\includegraphics[height=0.5cm]{logo.pdf}}
+\fancyfoot[R]{\small \thepage\ \var{ labels.page_of } \pageref{LastPage}}
+\graphicspath{{assets/}}
+
+\newcounter{questioncounter}
+\newtcolorbox{caixacabecalho}{
+    breakable, colback=white, colframe=black,
+    boxrule=1pt, arc=1mm,
+}
+\newtcolorbox{caixaquestao}{
+    colback=white, colframe=black,
+    boxrule=1.5pt, arc=1mm,
+    title=\var{ labels.question } \stepcounter{questioncounter}\thequestioncounter,
+    fonttitle=\bfseries,
+    colbacktitle=black,
+    coltitle=white,
+    before skip=5mm, after skip=5mm
+}
+
+\begin{document}
+
+\begin{caixacabecalho}
+\begin{minipage}[c]{0.10\textwidth}
+    \centering
+    \block{ if course_info.logo_path }
+        \includegraphics[width=\linewidth]{\var{ course_info.logo_path }}
+    \block{ endif }
+\end{minipage}%
+\begin{minipage}[c]{0.82\textwidth}
+    \centering
+    \fontsize{11}{13}\selectfont
+    \textbf{\var{ course_info.institution }} \\
+    \textbf{\var{ course_info.center }} \\
+    \textbf{\var{ course_info.program }}
+\end{minipage}
+\tcbline
+\begin{minipage}[t]{0.40\linewidth}
+    \begin{tabular}{r @{\hskip 1em} l}
+        \textbf{\var{ labels.course }:} & \var{ course_info.course_name } \\
+        \textbf{\var{ labels.professor }:} & \var{ course_info.professor_name } \\
+        \textbf{\var{ labels.student }:} & \var{ student.student_name } \\
+        \textbf{\var{ labels.id }:} & \var{ student.student_id } \\
+        \textbf{\var{ labels.date }:} & \today \\
+    \end{tabular}
+\end{minipage}%
+\block{ if qr_data }
+\hfill
+\begin{minipage}[c]{0.20\linewidth}
+    \centering
+    \vspace{1mm}
+    \qrcode[height=2.2cm, nolink]{\var{ qr_data }}
+    \par\vspace{1mm}
+\end{minipage}
+\block{ endif }
+\end{caixacabecalho}
+
+\block{ if document_settings.document_title }
+\begin{center}
+    \vspace{3mm} 
+    \fontsize{14}{16}\selectfont
+    \textbf{\var{ document_settings.document_title }}
+    \vspace{3mm}
+\end{center}
+\block{ endif }
+
+\block{ for block in question_blocks }
+    
+    \block{ if block.title }
+        \section*{\var{ block.title }}
+    \block{ endif }
+
+    \block{ for question in block.questions }
+        \begin{caixaquestao}
+            
+            \block{ if question.image and question.image.path and question.image.position == 'above' }
+                \begin{center}
+                    \includegraphics[width=\var{ question.image.width_cm }cm]{\var{ question.image.path }}
+                    \block{ if question.image.description and question.image.description is not none }
+                        \par\vspace{2mm}
+                        \small\textit{\var{ question.image.description }}
+                    \block{ endif }
+                \end{center}
+            \block{ endif }
+
+            \block{ if question.image and question.image.path and (question.image.position == 'left' or question.image.position == 'right') }
+
+                \block{ if question.image.position == 'left' }
+                \begin{minipage}[c]{0.3\textwidth}
+                    \centering
+                    \includegraphics[width=\linewidth]{\var{ question.image.path }}
+                    \block{ if question.image.description and question.image.description is not none }
+                        \par\vspace{1mm}
+                        \small\textit{\var{ question.image.description }}
+                    \block{ endif }
+                \end{minipage}\hfill
+                \begin{minipage}[c]{0.68\textwidth}
+                    \var{ question.prompt }
+                \end{minipage}
+                \block{ endif }
+
+                \block{ if question.image.position == 'right' }
+                \begin{minipage}[c]{0.68\textwidth}
+                    \var{ question.prompt }
+                \end{minipage}\hfill
+                \begin{minipage}[c]{0.3\textwidth}
+                    \centering
+                    \includegraphics[width=\linewidth]{\var{ question.image.path }}
+                    \block{ if question.image.description and question.image.description is not none }
+                        \par\vspace{1mm}
+                        \small\textit{\var{ question.image.description }}
+                    \block{ endif }
+                \end{minipage}
+                \block{ endif }
+
+            \block{ else }
+                \var{ question.prompt }
+            \block{ endif }
+
+            \block{ if question.image and question.image.path and question.image.position == 'below' }
+                \begin{center}
+                    \includegraphics[width=\var{ question.image.width_cm }cm]{\var{ question.image.path }}
+                    \block{ if question.image.description and question.image.description is not none }
+                        \par\vspace{2mm}
+                        \small\textit{\var{ question.image.description }}
+                    \block{ endif }
+                \end{center}
+            \block{ endif }
+
+            \block{ if question.notes and question.notes is not none }
+                \tcbline
+                \vspace{1mm}
+                \small\textit{\var{ question.notes }}
+            \block{ endif }
+        \end{caixaquestao}
+    \block{ endfor }
+\block{ endfor }
+
+\block{ if quote and quote.text and quote.author }
+    \vspace*{\fill}
+    \vspace{2mm}
+    \begin{flushright}
+        \textit{``\var{ quote.text }''} \\
+        \vspace{1mm}
+        --- \textbf{\var{ quote.author }}
+    \end{flushright}
+\block{ endif }
+
+\end{document}

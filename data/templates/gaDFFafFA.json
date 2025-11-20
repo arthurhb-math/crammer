@@ -1,0 +1,27 @@
+{
+  "name": "gaDFFafFA",
+  "document_settings": {
+    "document_title": "Fafddas",
+    "filename_prefix": "assessmenfasdagsgdasdft"
+  },
+  "course_info": {
+    "institution": "afsdfsadf",
+    "center": "afsdfasdf",
+    "program": "sdfaafsdsdf",
+    "course_name": "fsdaasfdsfd",
+    "professor_name": "fsdafasd"
+  },
+  "student_info": {
+    "csv_path": "agerggare.csv"
+  },
+  "question_selection": {
+    "blocks": [
+      {
+        "title": "gwrasedefz",
+        "method": "random_all",
+        "quantity": 1
+      }
+    ]
+  },
+  "logo_path": null
+}
